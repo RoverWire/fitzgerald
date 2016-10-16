@@ -15,7 +15,7 @@
         private $conditions;
 
         public $params = array();
-        public $match = false;
+        public $match = FALSE;
 
         public function __construct($httpMethod, $url, $conditions=array(), $mountPoint) {
 
@@ -176,9 +176,18 @@
         }
 
         public function handleError($number, $message, $file, $line) {
-            header("HTTP/1.0 500 Server Error");
-            echo $this->render('500', compact('number', 'message', 'file', 'line'));
+            $number = (is_integer($number)) ? $number : 500;
+            header("HTTP/1.0 $number Server Error");
+
+            if (!$this->viewExists('500')) {
+                echo '<h2>Server Error</h2>';
+                echo $message.' on '.$file.':'.$line;
+            } else {
+                echo $this->render('500', compact('message', 'file', 'line'));
+            }
+
             die();
+            exit;
         }
 
         public function show404() {
@@ -252,7 +261,7 @@
               $this->session->success = $this->success;
             }
             header("Location: $host$uri$path");
-            return false;
+            return FALSE;
         }
 
         protected function render($fileName, $variableArray=array()) {
@@ -277,8 +286,13 @@
         protected function renderTemplate($fileName, $locals = array())
         {
             extract($locals);
+            $view = realpath($this->root() . 'views/' . $fileName . '.php');
+            if (!$this->viewExists($fileName)) {
+                return $this->handleError(402, 'View does not exists: '.$view, __FILE__, __LINE__);
+            }
+
             ob_start();
-            include(realpath($this->root() . 'views/' . $fileName . '.php'));
+            include($view);
             return ob_get_clean();
         }
 
@@ -373,5 +387,10 @@
             }
 
             return $this->show404();
+        }
+
+        private function viewExists($file)
+        {
+            return file_exists(realpath($this->root() . 'views/' . $file . '.php'));
         }
     }
