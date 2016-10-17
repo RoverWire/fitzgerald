@@ -286,14 +286,14 @@
         protected function renderTemplate($fileName, $locals = array())
         {
             extract($locals);
-            $view = realpath($this->root() . 'views/' . $fileName . '.php');
+            $view = $this->root() . 'views/' . $fileName . '.php';
             if (!$this->viewExists($fileName)) {
-                $message = "View not exists: ".$this->root() . 'views/' . $fileName . '.php';
+                $message = "View not exists: ".$view;
                 return $this->handleError(500, $message, __FILE__, __LINE__);
             }
 
             ob_start();
-            include($view);
+            include(realpath($view));
             return ob_get_clean();
         }
 
