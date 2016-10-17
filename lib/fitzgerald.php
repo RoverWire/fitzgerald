@@ -15,7 +15,7 @@
         private $conditions;
 
         public $params = array();
-        public $match = FALSE;
+        public $match = false;
 
         public function __construct($httpMethod, $url, $conditions=array(), $mountPoint) {
 
@@ -261,7 +261,7 @@
               $this->session->success = $this->success;
             }
             header("Location: $host$uri$path");
-            return FALSE;
+            return false;
         }
 
         protected function render($fileName, $variableArray=array()) {
