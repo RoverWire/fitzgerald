@@ -288,7 +288,8 @@
             extract($locals);
             $view = realpath($this->root() . 'views/' . $fileName . '.php');
             if (!$this->viewExists($fileName)) {
-                return $this->handleError(402, 'View does not exists: '.$view, __FILE__, __LINE__);
+                $message = "View not exists: ".$this->root() . 'views/' . $fileName . '.php';
+                return $this->handleError(500, $message, __FILE__, __LINE__);
             }
 
             ob_start();
